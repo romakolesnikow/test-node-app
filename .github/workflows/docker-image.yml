@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build and push:
+  build_and_push:
 
     environment:
       name: yandex-cloud
