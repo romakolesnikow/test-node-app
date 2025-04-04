@@ -7,13 +7,28 @@ on:
     branches: [ "main" ]
 
 jobs:
+  build and push:
 
-  build:
+    environment:
+      name: yandex-cloud
 
     runs-on: ubuntu-latest
 
     steps:
+
     - uses: actions/checkout@v4
-    - name: Build the Docker image
+
+    - name: login
+      run: |
+        echo "${{ secrets.YC_OAUTH_TOKEN }}" | docker login \
+          --username oauth \
+          --password-stdin \
+          cr.yandex
+
+    - name: build
       run: docker build . --file Dockerfile --tag cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:$(date +%s)
+      working-directory: ./app
+
+    - name: deploy to registry
+      run: docker push cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:$(date +%s)
       working-directory: ./app
