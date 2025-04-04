@@ -106,6 +106,7 @@ app.get('/', async (req, res) => {
     <p>${status}</p>
     <p>Current time: ${time}</p>
     <p>Try refreshing the page</p>
+    <p>appversion: v1.4</p>
   `);
 });
 
