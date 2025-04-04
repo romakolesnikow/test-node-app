@@ -25,10 +25,13 @@ jobs:
           --password-stdin \
           cr.yandex
 
-    - name: build_and_push
-      run: |
-      DATE=date +%d.%m.%Y
-      SHORT_SHA=${GITHUB_SHA::7}
-      docker build . --file Dockerfile --tag cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:$DATE-$SHORT_SHA
-      docker push cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:$DATE-$SHORT_SHA
+    - run: DATE=date +%d.%m.%Y
+    - run: SHORT_SHA=${GITHUB_SHA::7}
+
+    - name: build
+      run: docker build . --file Dockerfile --tag cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:$DATE-$SHORT_SHA
+      working-directory: ./app
+
+    - name: push
+      run: docker push cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:$DATE-$SHORT_SHA
       working-directory: ./app
