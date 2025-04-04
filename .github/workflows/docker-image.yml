@@ -25,7 +25,7 @@ jobs:
           --password-stdin \
           cr.yandex
 
-    - run: DATE=date +%d.%m.%Y
+    - run: DATE=$(date +%d.%m.%Y)
     - run: SHORT_SHA=${GITHUB_SHA::7}
 
     - name: build
