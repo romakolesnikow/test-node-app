@@ -8,30 +8,37 @@ on:
 
 jobs:
   deploy:
-
     environment:
       name: yandex-cloud
-
     runs-on: ubuntu-latest
 
     steps:
-
     - uses: actions/checkout@v4
 
-    - name: login
+    - name: Login to Yandex Container Registry
       run: |
         echo "${{ secrets.YC_OAUTH_TOKEN }}" | docker login \
           --username oauth \
           --password-stdin \
           cr.yandex
 
-    - run: DATE=$(date +%d.%m.%Y)
-    - run: SHORT_SHA=${GITHUB_SHA::7}
+    - name: Set build variables
+      id: vars
+      run: |
+        DATE=$(date +%Y.%m.%d)  # Use YYYY.MM.DD format
+        SHORT_SHA=${GITHUB_SHA::7}
+        echo "DATE=${DATE}" >> $GITHUB_OUTPUT
+        echo "SHORT_SHA=${SHORT_SHA}" >> $GITHUB_OUTPUT
 
-    - name: build
-      run: docker build . --file Dockerfile --tag cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:$DATE-$SHORT_SHA
+    - name: Build Docker image
+      run: |
+        docker build . \
+          --file Dockerfile \
+          --tag cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:${{ steps.vars.outputs.DATE }}-${{ steps.vars.outputs.SHORT_SHA }}
       working-directory: ./app
 
-    - name: push
-      run: docker push cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:$DATE-$SHORT_SHA
+    - name: Push Docker image
+      run: |
+        docker push cr.yandex/crp0iuhn6c5se3bdfrsv/test-app:${{ steps.vars.outputs.DATE }}-${{ steps.vars.outputs.SHORT_SHA }}
       working-directory: ./app
+
